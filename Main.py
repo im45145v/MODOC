@@ -10,28 +10,35 @@ co = cohere.Client('Cohere_api_key') #use your Co:here api key here
 client = discord.Client(intents=discord.Intents.default())
 
 @client.event
-async def on_ready():print(f"Bot logged in as {client.user}")#checking if bot is upor not
+async def on_ready():print(f"MODOC logged in as {client.user}")#checking if bot is upor not
   
 @client.event
-async def on_message(message):   
+async def on_message(message): 
+  
   if message.author != client.user:
+    
     if message.content.startswith('!h'):
+      #generating data from cohere
       x=co.generate(  model='xlarge',prompt=message.content+':',max_tokens=50,temperature=0.9,k=0,p=0.75,frequency_penalty=1,presence_penalty=0,stop_sequences=["-"],return_likelihoods='NONE')
       g=str(x.generations[0].text)
-      await message.reply(g)
+      await message.reply(g) #replying the msg 
+      
     elif message.content.startswith("!tts"):
+      #adding tts option to Bot
       xo=message.content
       xo=xo[4:]
-      language = 'te'
-      myobj = gTTS(text=xo, lang=language, slow=False)
-      myobj.save("welcome.mp3")
-      await message.reply(file=discord.File('welcome.mp3'))
-    elif message.content.startswith('!cancer'):
+      myobj = gTTS(text=xo, lang='en', slow=False)
+      myobj.save("TTS.mp3")
+      await message.reply(file=discord.File('TTS.mp3'))
+      
+    elif message.content.startswith('!cancer'):#cancer command
+      
       x=co.generate(  model='xlarge',prompt=message.content+':',max_tokens=50,temperature=0.9,k=0,p=0.75,frequency_penalty=1,presence_penalty=0,stop_sequences=["-"],return_likelihoods='NONE')
       g=str(x.generations[0].text)
       await message.reply(g)
     
     elif message.content.startswith("!poll"):
+      #Bot will Answer Random Poll it reacts emoji if the options are below 12 and replies if above 11
       lns=0
       emjs=['0️⃣','1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣','7️⃣','8️⃣','9️⃣','🔟','⏸️']
       po=message.content
@@ -45,8 +52,10 @@ async def on_message(message):
         await message.add_reaction(ro)
       else:
         await message.reply(random.choice(range(0, lns))	)
+    
     elif message.content.startswith('!'):
-      y=message.content
+      #If it has keywords already have
+      y=message.content 
       p=y.replace('!',' ')
       q=p.split(" ")
       ls=['health','vitamin','vitamins','Proteins','Protein','biotin','Nutrients']
@@ -61,8 +70,12 @@ async def on_message(message):
               x=co.generate(  model='xlarge',prompt=message.content+':',max_tokens=50,temperature=0.9,k=0,p=0.75,frequency_penalty=1,presence_penalty=0,stop_sequences=["-"],return_likelihoods='NONE')
               g=str(x.generations[0].text)
               await message.reply(g)    
+    
     elif message.content.startswith('!'):
+      #if its completely new thing to generate
       x=co.generate(  model='xlarge',prompt=message.content+':',max_tokens=50,temperature=0.9,k=0,p=0.75,frequency_penalty=1,presence_penalty=0,stop_sequences=["-"],return_likelihoods='NONE')
       g=str(x.generations[0].text)
       await message.reply(g)
+
+#coding finished running the bot
 client.run(token)
